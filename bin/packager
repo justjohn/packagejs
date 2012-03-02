@@ -1,0 +1,63 @@
+#!/usr/bin/env node
+
+var PACKAGER = require("../packager")
+	, args = process.argv
+    , node = args.shift()
+    , thisFile = args.shift().split("/")
+	, thisFile = thisFile[thisFile.length-1]
+	, files = []
+	, arg
+	, options = {};
+
+while (args.length > 0) {
+	arg = args.shift();
+	switch (arg) {
+		case "--help":
+			printUsage(process.stdout);
+			return;
+		case "--output":
+		case "-o":
+			options.output = args.shift();
+			break;
+		default:
+			files.push(arg);
+	}
+}
+
+if (files.length == 0) {
+	process.stderr.write("ERR: No input files provided.\n\n");
+	printUsage(process.stderr);
+	return;
+	
+} else {
+
+	var data = PACKAGER.package(files);
+	write(data);
+}
+
+function printUsage(stream) {
+	stream.write("Usage:\n\t");
+	stream.write(thisFile + " [--help] [--output file] input.js\n");
+}
+
+function write(data) {
+    var stream;
+    if (options.output !== undefined) {
+		// write to output file
+        stream = fs.createWriteStream(options.output, {
+            flags: "w",
+            encoding: "utf8",
+            mode: 0644
+        });
+
+    } else {
+		// default to stdout
+        stream = process.stdout;
+    }
+    stream.write(data);
+
+    if (options.output !== undefined) {
+		// Close file (if open)
+        stream.end();
+    }
+};
