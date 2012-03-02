@@ -2,6 +2,9 @@
 
 var PACKAGER = require("../packager")
 	, fs = require("fs")
+    , UGLIFY = require("uglify-js")
+    , jsp = UGLIFY.parser
+    , pro = UGLIFY.uglify
 	
 	, args = process.argv
     , node = args.shift()
@@ -10,7 +13,9 @@ var PACKAGER = require("../packager")
 	
 	, files = []
 	, arg
-	, options = {};
+	, options = {
+	    compress: false
+	};
 
 while (args.length > 0) {
 	arg = args.shift();
@@ -22,6 +27,10 @@ while (args.length > 0) {
 		case "-o":
 			options.output = args.shift();
 			break;
+		case "--compress":
+		case "-c":
+		    options.compress = true;
+		    break;
 		default:
 			files.push(arg);
 	}
@@ -35,6 +44,12 @@ if (files.length == 0) {
 } else {
 
 	var data = PACKAGER.package(files);
+	if (options.compress) {
+        var ast = jsp.parse(data);
+        ast = pro.ast_mangle(ast);
+        ast = pro.ast_squeeze(ast);
+        data = pro.gen_code(ast);
+	}
 	write(data);
 }
 

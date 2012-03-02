@@ -1,7 +1,7 @@
 var fs = require("fs")
-    , UGLIFY = require("uglify-js")
     , PATHS = require("./lib/paths")
     , MODULE = require("./lib/module")
+    , UGLIFY = require("uglify-js")
     , jsp = UGLIFY.parser
     , pro = UGLIFY.uglify;
 
@@ -48,7 +48,7 @@ exports.package = function(files) {
                     
                             if (arg_type == "array") {
                                 // This module has depenencies! Lets get the JS.
-                                deps = pro.gen_code(args[0], {beutify:true});
+                                deps = pro.gen_code(args[0], {beautify:true});
                         
                                 // Parse out dependency file names
                                 arg_deps.forEach(function(dep) {
@@ -83,7 +83,7 @@ exports.package = function(files) {
                             // Build the function JS 
                             module_fn = "";
                             arg_fn[3].forEach(function(fn_block) {
-                                module_fn += pro.gen_code(fn_block, {beutify:true});
+                                module_fn += pro.gen_code(fn_block, {beautify:true}) + "\n";
                             })
                         }
                         return this;
@@ -105,9 +105,6 @@ exports.package = function(files) {
         }
     }
 
-    var ast = jsp.parse(output);
-    ast = pro.ast_mangle(ast);
-    ast = pro.ast_squeeze(ast);
-    return pro.gen_code(ast);
+    return output;
 };
 
