@@ -1,10 +1,13 @@
 #!/usr/bin/env node
 
 var PACKAGER = require("../packager")
+	, fs = require("fs")
+	
 	, args = process.argv
     , node = args.shift()
-    , thisFile = args.shift().split("/")
-	, thisFile = thisFile[thisFile.length-1]
+    , thisPath = args.shift().split("/")
+	, thisFile = thisPath[thisPath.length-1]
+	
 	, files = []
 	, arg
 	, options = {};
