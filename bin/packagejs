@@ -1,67 +1,67 @@
 #!/usr/bin/env node
 
 var PACKAGER = require("../packager")
-	, fs = require("fs")
+    , fs = require("fs")
     , UGLIFY = require("uglify-js")
     , jsp = UGLIFY.parser
     , pro = UGLIFY.uglify
 	
-	, args = process.argv
+    , args = process.argv
     , node = args.shift()
     , thisPath = args.shift().split("/")
-	, thisFile = thisPath[thisPath.length-1]
+    , thisFile = thisPath[thisPath.length-1]
 	
-	, files = []
-	, arg
-	, options = {
-	    compress: false
-	};
+    , files = []
+    , arg
+    , options = {
+        compress: false
+    };
 
 while (args.length > 0) {
-	arg = args.shift();
-	switch (arg) {
-		case "--help":
-			printUsage(process.stdout);
-			return;
-		case "--output":
-		case "-o":
-			options.output = args.shift();
-			break;
-		case "--compress":
-		case "-c":
-		    options.compress = true;
-		    break;
-		default:
-			files.push(arg);
-	}
+    arg = args.shift();
+    switch (arg) {
+    	case "--help":
+	    printUsage(process.stdout);
+	    return;
+    	case "--output":
+        case "-o":
+	    options.output = args.shift();
+            break;
+	case "--compress":
+	case "-c":
+	    options.compress = true;
+	    break;
+	default:
+	    files.push(arg);
+    }
 }
 
 if (files.length == 0) {
-	process.stderr.write("ERR: No input files provided.\n\n");
-	printUsage(process.stderr);
-	return;
+    process.stderr.write("ERR: No input files provided.\n\n");
+    printUsage(process.stderr);
+    return;
 	
 } else {
 
-	var data = PACKAGER.package(files);
-	if (options.compress) {
+    var data = PACKAGER.package(files);
+    if (options.compress) {
         var ast = jsp.parse(data);
         ast = pro.ast_mangle(ast);
         ast = pro.ast_squeeze(ast);
         data = pro.gen_code(ast);
-	}
-	write(data);
+    }
+    write(data);
 }
 
 function printUsage(stream) {
-	stream.write("Usage:\n\t");
-	stream.write(thisFile + " [--help] [--compress] [--output file] input.js\n");
+    stream.write("Usage:\n\t");
+    stream.write(thisFile + " [--help] [--compress] [--output file] input.js\n");
 }
 
 function write(data) {
     var stream;
     if (options.output !== undefined) {
-		// write to output file
+	// write to output file
         stream = fs.createWriteStream(options.output, {
             flags: "w",
             encoding: "utf8",
@@ -69,13 +69,13 @@ function write(data) {
         });
 
     } else {
-		// default to stdout
+	// default to stdout
         stream = process.stdout;
     }
     stream.write(data);
 
     if (options.output !== undefined) {
-		// Close file (if open)
+	// Close file (if open)
         stream.end();
     }
 };
