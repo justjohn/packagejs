@@ -12,7 +12,7 @@
         "type": "git",
         "url": "git://github.com/justjohn/packagejs.git"
     },
-    "main": "packager.js",
+    "main": "package.js",
     "engines": {
         "node": "*"
     },

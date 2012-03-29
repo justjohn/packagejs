@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-var PACKAGER = require("../packager")
+var PACKAGER = require("../package")
     , fs = require("fs")
     , UGLIFY = require("uglify-js")
     , jsp = UGLIFY.parser
