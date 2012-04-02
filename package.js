@@ -5,7 +5,8 @@ var fs = require("fs")
     , jsp = UGLIFY.parser
     , pro = UGLIFY.uglify;
 
-exports.package = function(files) {
+exports.package = function(files, options) {
+    if (!options) options = {};
 
     var processedFile = {}
         , modules = {}
@@ -21,7 +22,7 @@ exports.package = function(files) {
                 base = PATHS.findBase(file);
             }
         
-            var id = MODULE.makeId(file, base)
+            var id = options.relative ? MODULE.makeId(file, base) : MODULE.makeId(file)
                 , data = fs.readFileSync(file, 'utf8')
                 , ast = jsp.parse(data)
                 , deps = undefined
@@ -40,7 +41,7 @@ exports.package = function(files) {
                                 , arg_fn;
                 
                         // Check for a modules.declare call
-                        if (name[1] == "module" && method == "declare" && args[0]) {
+                        if (name && name[1] == "module" && method == "declare" && args[0]) {
                             // We found the arguments location, check for an array
                             arg_type = args[0][0];
                             arg_deps = args[0][1];
@@ -54,7 +55,8 @@ exports.package = function(files) {
                                 arg_deps.forEach(function(dep) {
                                     var type = dep[0]
                                         , value = dep[1]
-                                        , file_name;
+                                        , file_name
+                                        , parsed_file;
                                 
                                     if (type == "string") {
                                         // handle string dependencies
@@ -67,10 +69,14 @@ exports.package = function(files) {
                             
                                     if (file_name)  {
                                         file_name = file_name + ".js";
-                                        var normalized_file = PATHS.relativePath(file, file_name);
+                                        if (options.relative) {
+                                            parsed_file = PATHS.relativePath(file, file_name);
+                                        } else {
+                                            parsed_file = file_name;
+                                        }
                                 
-                                        if (processedFile[normalized_file] === undefined) {
-                                            files.push(normalized_file);
+                                        if (processedFile[parsed_file] === undefined) {
+                                            files.push(parsed_file);
                                         }
                                     }
                                 });
