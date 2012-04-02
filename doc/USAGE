@@ -1,0 +1,8 @@
+Usage:
+    packagejs [--help] [--compress] [--output file] input.js
+
+Options
+    --help          Display this help message.
+    --compress      Use UglifyJS to compress the output JS file.
+    --output [file] The file name for the output of packagejs.
+

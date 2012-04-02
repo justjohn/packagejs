@@ -54,8 +54,7 @@ if (files.length == 0) {
 }
 
 function printUsage(stream) {
-    stream.write("Usage:\n\t");
-    stream.write(thisFile + " [--help] [--compress] [--output file] input.js\n");
+    fs.createReadStream(__dirname + "/../doc/USAGE").pipe(stream);
 }
 
 function write(data) {
