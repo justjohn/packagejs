@@ -2,7 +2,7 @@
     "author": "John Roepke <john@justjohn.us> (http://john.sh/)",
     "name": "packagejs",
     "description": "A tool for combining/memoizing multiple CommonJS Modules/2.0 into one js file.",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "homepage": "https://github.com/justjohn/packagejs",
     "licenses": [
         { "type": "BSD-2-Clause",
